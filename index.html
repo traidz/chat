@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -148,12 +148,7 @@
             fill: white;
         }
 
-        .message-right .message-body {
-            font-size: 14px;
-            word-break: break-all;
-            color: #ffffff;
-        }
-
+        .message-right .message-body,
         .message-left .message-body {
             font-size: 14px;
             word-break: break-all;
@@ -173,9 +168,6 @@
             color: #aaaaaa;
             margin-top: 4px;
             align-self: flex-end;
-        }
-        .message-right .message-time {
-            color: #aaaaaa;
         }
 
         .chat-input-area {
@@ -233,12 +225,13 @@
 
 <script>
     const MY_NAME = "Traidz";
+    const ADMIN_CODE = "ADMINMOD123";
     let username = "";
 
     function checkUser() {
         username = localStorage.getItem('chat_username');
         
-        if (!username || username.trim() === "" || username.toLowerCase() === MY_NAME.toLowerCase()) {
+        if (!username || username.trim() === "") {
             askForName();
         } else {
             updateUserLabel();
@@ -248,13 +241,22 @@
     function askForName() {
         let inputName = prompt("Mời bạn nhập tên hiển thị trong phòng chat:", "Khách_" + Math.floor(Math.random() * 1000));
         
-        // Kiểm tra xem người dùng có cố tình nhập tên Traidz hoặc các biến thể không
-        while (!inputName || inputName.trim() === "" || inputName.toLowerCase() === MY_NAME.toLowerCase()) {
-            alert("Tên 'Traidz' là tên độc quyền bảo vệ cho Admin! Người dùng không thể sử dụng tên này. Vui lòng nhập tên khác.");
-            inputName = prompt("Mời bạn nhập lại tên hiển thị của bạn:", "Khách_" + Math.floor(Math.random() * 1000));
+        if (!inputName || inputName.trim() === "") {
+            inputName = "Khách_" + Math.floor(Math.random() * 1000);
         }
 
-        username = inputName.trim();
+        if (inputName.trim().toLowerCase() === MY_NAME.toLowerCase()) {
+            let codeInput = prompt("Bạn đang chọn tên 'Traidz' (Admin). Vui lòng nhập mã xác minh để tiếp tục:");
+            if (codeInput === ADMIN_CODE) {
+                username = MY_NAME;
+            } else {
+                alert("Mã xác minh không chính xác! Tên của bạn đã được chuyển về khách mặc định.");
+                username = "Khách_" + Math.floor(Math.random() * 1000);
+            }
+        } else {
+            username = inputName.trim();
+        }
+
         localStorage.setItem('chat_username', username);
         updateUserLabel();
     }
@@ -262,16 +264,22 @@
     function changeUsername() {
         let newName = prompt("Nhập tên mới của bạn:", username);
         
-        if (newName && newName.trim().toLowerCase() === MY_NAME.toLowerCase()) {
-            alert("Tên 'Traidz' là tên độc quyền bảo vệ cho Admin! Bạn không được phép sử dụng tên này.");
-            return;
+        if (!newName || newName.trim() === "") return;
+
+        if (newName.trim().toLowerCase() === MY_NAME.toLowerCase()) {
+            let codeInput = prompt("Bạn đang cố dùng tên 'Traidz' (Admin). Nhập mã xác minh:");
+            if (codeInput === ADMIN_CODE) {
+                username = MY_NAME;
+            } else {
+                alert("Mã xác minh sai! Không thể đổi sang tên này.");
+                return;
+            }
+        } else {
+            username = newName.trim();
         }
 
-        if (newName && newName.trim() !== "") {
-            username = newName.trim();
-            localStorage.setItem('chat_username', username);
-            updateUserLabel();
-        }
+        localStorage.setItem('chat_username', username);
+        updateUserLabel();
     }
 
     function updateUserLabel() {
