@@ -1,0 +1,383 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phòng Chat Support Trai DZ</title>
+    <style>
+        @keyframes rainbowBorder {
+            0% { border-color: #ff0000; box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
+            14% { border-color: #ff7f00; box-shadow: 0 0 10px rgba(255, 127, 0, 0.5); }
+            28% { border-color: #ffff00; box-shadow: 0 0 10px rgba(255, 255, 0, 0.5); }
+            42% { border-color: #00ff00; box-shadow: 0 0 10px rgba(0, 255, 0, 0.5); }
+            57% { border-color: #00ffff; box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+            71% { border-color: #0000ff; box-shadow: 0 0 10px rgba(0, 0, 255, 0.5); }
+            85% { border-color: #8b00ff; box-shadow: 0 0 10px rgba(139, 0, 255, 0.5); }
+            100% { border-color: #ff0000; box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
+        }
+
+        @keyframes rainbowText {
+            0% { color: #ff0000; }
+            14% { color: #ff7f00; }
+            28% { color: #ffff00; }
+            42% { color: #00ff00; }
+            57% { color: #00ffff; }
+            71% { color: #0000ff; }
+            85% { color: #8b00ff; }
+            100% { color: #ff0000; }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            background: #1e1e1e;
+            border: 3px solid #ff0000;
+            border-radius: 12px;
+            animation: rainbowBorder 6s infinite linear;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            height: 85vh;
+        }
+
+        .chat-header {
+            background: #181818;
+            border-bottom: 2px solid #333;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-settings {
+            font-size: 12px;
+            font-weight: normal;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .change-name-btn {
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        .change-name-btn:hover {
+            background: #444;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #121212;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message-item {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            word-wrap: break-word;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-left {
+            align-self: flex-start;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #ffffff;
+            border-bottom-left-radius: 2px;
+        }
+
+        .message-right {
+            align-self: flex-end;
+            background: #2b2b2b;
+            border: 1px solid #444;
+            color: #ffffff;
+            border-bottom-right-radius: 2px;
+        }
+
+        .message-header {
+            font-weight: bold;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .traidz-name {
+            animation: rainbowText 4s infinite linear;
+            font-weight: bold;
+        }
+
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            background-color: #0095f6;
+            border-radius: 50%;
+            color: white;
+        }
+        .admin-badge svg {
+            width: 9px;
+            height: 9px;
+            fill: white;
+        }
+
+        .message-right .message-body {
+            font-size: 14px;
+            word-break: break-all;
+            color: #ffffff;
+        }
+
+        .message-left .message-body {
+            font-size: 14px;
+            word-break: break-all;
+            color: #ffffff;
+        }
+
+        .message-body a {
+            color: #4da6ff;
+            text-decoration: underline;
+        }
+        .message-body a:hover {
+            color: #80bfff;
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: #aaaaaa;
+            margin-top: 4px;
+            align-self: flex-end;
+        }
+        .message-right .message-time {
+            color: #aaaaaa;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 12px;
+            background: #181818;
+            border-top: 2px solid #333;
+        }
+
+        .chat-input-area input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            background: #2a2a2a;
+            border: 2px solid #555;
+            color: white;
+            border-radius: 6px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .chat-input-area button {
+            background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #8b00ff);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-left: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .chat-input-area button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <span>Phòng Chat Support Trai DZ</span>
+        <div class="user-settings">
+            <span id="user-label">Tên: ...</span>
+            <button class="change-name-btn" onclick="changeUsername()">Đổi tên</button>
+        </div>
+    </div>
+
+    <div class="chat-messages" id="messagesList"></div>
+
+    <div class="chat-input-area">
+        <input type="text" id="messageInput" placeholder="Nhập tin nhắn hoặc dán link..." onkeypress="handleKeyPress(event)">
+        <button onclick="postMessage()">Gửi</button>
+    </div>
+</div>
+
+<script>
+    const MY_NAME = "Traidz";
+    let username = "";
+
+    function checkUser() {
+        username = localStorage.getItem('chat_username');
+        
+        if (!username || username.trim() === "" || username.toLowerCase() === MY_NAME.toLowerCase()) {
+            askForName();
+        } else {
+            updateUserLabel();
+        }
+    }
+
+    function askForName() {
+        let inputName = prompt("Mời bạn nhập tên hiển thị trong phòng chat:", "Khách_" + Math.floor(Math.random() * 1000));
+        
+        // Kiểm tra xem người dùng có cố tình nhập tên Traidz hoặc các biến thể không
+        while (!inputName || inputName.trim() === "" || inputName.toLowerCase() === MY_NAME.toLowerCase()) {
+            alert("Tên 'Traidz' là tên độc quyền bảo vệ cho Admin! Người dùng không thể sử dụng tên này. Vui lòng nhập tên khác.");
+            inputName = prompt("Mời bạn nhập lại tên hiển thị của bạn:", "Khách_" + Math.floor(Math.random() * 1000));
+        }
+
+        username = inputName.trim();
+        localStorage.setItem('chat_username', username);
+        updateUserLabel();
+    }
+
+    function changeUsername() {
+        let newName = prompt("Nhập tên mới của bạn:", username);
+        
+        if (newName && newName.trim().toLowerCase() === MY_NAME.toLowerCase()) {
+            alert("Tên 'Traidz' là tên độc quyền bảo vệ cho Admin! Bạn không được phép sử dụng tên này.");
+            return;
+        }
+
+        if (newName && newName.trim() !== "") {
+            username = newName.trim();
+            localStorage.setItem('chat_username', username);
+            updateUserLabel();
+        }
+    }
+
+    function updateUserLabel() {
+        const userLabel = document.getElementById('user-label');
+        if (username.toLowerCase() === MY_NAME.toLowerCase()) {
+            userLabel.innerHTML = `Tên: <span class="traidz-name">Traidz</span>`;
+        } else {
+            userLabel.innerHTML = `Tên: <span style="color: #ff0000; font-weight: bold;">${escapeHTML(username)}</span>`;
+        }
+    }
+
+    function postMessage() {
+        const input = document.getElementById('messageInput');
+        const text = input.value.trim();
+        if (text === "") return;
+
+        let messages = JSON.parse(localStorage.getItem('chat_messages_v8')) || [];
+
+        const newMessage = {
+            name: username,
+            content: text,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+
+        messages.push(newMessage);
+        localStorage.setItem('chat_messages_v8', JSON.stringify(messages));
+
+        input.value = "";
+        loadMessages();
+    }
+
+    function loadMessages() {
+        const messagesList = document.getElementById('messagesList');
+        const messages = JSON.parse(localStorage.getItem('chat_messages_v8')) || [];
+
+        messagesList.innerHTML = "";
+
+        messages.forEach(msg => {
+            const div = document.createElement('div');
+            
+            const isMe = (msg.name === username);
+            div.className = isMe ? 'message-item message-right' : 'message-item message-left';
+
+            let nameHtml = "";
+            let badgeHtml = "";
+
+            if (msg.name.toLowerCase() === MY_NAME.toLowerCase()) {
+                nameHtml = `<span class="traidz-name">Traidz</span>`;
+                badgeHtml = `
+                    <span class="admin-badge" title="Tài khoản chính chủ Traidz">
+                        <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+                    </span>
+                `;
+            } else {
+                nameHtml = `<span style="color: #ff0000; font-weight: bold;">${escapeHTML(msg.name)}</span>`;
+            }
+
+            const formattedContent = linkify(escapeHTML(msg.content));
+
+            div.innerHTML = `
+                <div class="message-header">
+                    ${nameHtml}
+                    ${badgeHtml}
+                </div>
+                <div class="message-body">${formattedContent}</div>
+                <div class="message-time">${msg.time}</div>
+            `;
+            messagesList.appendChild(div);
+        });
+
+        messagesList.scrollTop = messagesList.scrollHeight;
+    }
+
+    function linkify(inputText) {
+        let replacedText, replacePattern1, replacePattern2, replacePattern3;
+
+        replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+        replacedText = inputText.replace(replacePattern1, '<a href="$1" target="_blank">$1</a>');
+
+        replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
+        replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" target="_blank">$2</a>');
+
+        replacePattern3 = /(([a-zA-Z0-9\-\_\.])+@[a-zA-Z\_]+?(\.[a-zA-Z]{2,6})+)/gim;
+        replacedText = replacedText.replace(replacePattern3, '<a href="mailto:$1">$1</a>');
+
+        return replacedText;
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            postMessage();
+        }
+    }
+
+    function escapeHTML(str) {
+        return str.replace(/[&<>'"]/g, 
+            tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+        );
+    }
+
+    window.onload = function() {
+        checkUser();
+        loadMessages();
+        setInterval(loadMessages, 1000);
+    };
+</script>
+
+</body>
+</html>
