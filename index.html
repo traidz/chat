@@ -3,42 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phòng Chat Support Trai DZ</title>
+    <title>Phòng Chat Support Traidz</title>
     <style>
-        @keyframes rainbowBorder {
-            0% { border-color: #ff0000; box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
-            14% { border-color: #ff7f00; box-shadow: 0 0 10px rgba(255, 127, 0, 0.5); }
-            28% { border-color: #ffff00; box-shadow: 0 0 10px rgba(255, 255, 0, 0.5); }
-            42% { border-color: #00ff00; box-shadow: 0 0 10px rgba(0, 255, 0, 0.5); }
-            57% { border-color: #00ffff; box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
-            71% { border-color: #0000ff; box-shadow: 0 0 10px rgba(0, 0, 255, 0.5); }
-            85% { border-color: #8b00ff; box-shadow: 0 0 10px rgba(139, 0, 255, 0.5); }
-            100% { border-color: #ff0000; box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
-        }
-
-        @keyframes rainbowText {
-            0% { color: #ff0000; }
-            14% { color: #ff7f00; }
-            28% { color: #ffff00; }
-            42% { color: #00ff00; }
-            57% { color: #00ffff; }
-            71% { color: #0000ff; }
-            85% { color: #8b00ff; }
-            100% { color: #ff0000; }
-        }
-
         @keyframes messagePopIn {
-            0% {
-                opacity: 0;
-                transform: translateY(20px) scale(0.9);
-            }
-            70% {
-                transform: translateY(-4px) scale(1.02);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+            70% { transform: translateY(-4px) scale(1.02); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         body {
@@ -53,34 +23,70 @@
 
         .chat-container {
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             background: #1e1e1e;
-            border: 3px solid #ff0000;
-            border-radius: 12px;
-            animation: rainbowBorder 6s infinite linear;
+            border: 2px solid #444;
+            border-radius: 20px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            height: 85vh;
+            height: 90vh;
+        }
+
+        .browser-tabs {
+            background: #181818;
+            display: flex;
+            padding: 8px 8px 0 8px;
+            gap: 6px;
+            border-bottom: 2px solid #333;
+            overflow-x: auto;
+            flex-shrink: 0;
+        }
+
+        .browser-tab {
+            background: #252525;
+            color: #aaa;
+            padding: 8px 16px;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid #333;
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .browser-tab:hover {
+            background: #2a2a2a;
+            color: #fff;
+        }
+
+        .browser-tab.active {
+            background: #1e1e1e;
+            color: #fff;
+            border-color: #555;
+            border-bottom: 2px solid #1e1e1e;
+            font-weight: bold;
         }
 
         .chat-header {
-            background: #181818;
+            background: #1e1e1e;
             border-bottom: 2px solid #333;
-            padding: 15px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 18px;
+            padding: 12px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
+            flex-shrink: 0;
         }
 
         .user-settings {
             font-size: 12px;
-            font-weight: normal;
             display: flex;
             gap: 8px;
             align-items: center;
@@ -90,14 +96,13 @@
             background: #333;
             color: #fff;
             border: 1px solid #555;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 5px 10px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 11px;
+            transition: background 0.2s;
         }
-        .action-btn:hover {
-            background: #444;
-        }
+        .action-btn:hover { background: #444; }
 
         .chat-messages {
             flex: 1;
@@ -107,12 +112,23 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            min-height: 0;
+        }
+
+        .tab-content {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .tab-content.active {
+            display: flex;
         }
 
         .message-item {
             max-width: 75%;
             padding: 10px 14px;
-            border-radius: 12px;
+            border-radius: 16px;
             word-wrap: break-word;
             display: flex;
             flex-direction: column;
@@ -124,7 +140,7 @@
             background: #2a2a2a;
             border: 1px solid #444;
             color: #ffffff;
-            border-bottom-left-radius: 2px;
+            border-bottom-left-radius: 6px;
         }
 
         .message-right {
@@ -132,7 +148,7 @@
             background: #2b2b2b;
             border: 1px solid #444;
             color: #ffffff;
-            border-bottom-right-radius: 2px;
+            border-bottom-right-radius: 6px;
         }
 
         .message-header {
@@ -144,11 +160,6 @@
             font-size: 13px;
         }
 
-        .traidz-name {
-            animation: rainbowText 4s infinite linear;
-            font-weight: bold;
-        }
-
         .admin-badge {
             display: inline-flex;
             align-items: center;
@@ -158,12 +169,9 @@
             background-color: #0095f6;
             border-radius: 50%;
             color: white;
+            flex-shrink: 0;
         }
-        .admin-badge svg {
-            width: 9px;
-            height: 9px;
-            fill: white;
-        }
+        .admin-badge svg { width: 9px; height: 9px; fill: white; }
 
         .message-body {
             font-size: 14px;
@@ -171,13 +179,18 @@
             color: #ffffff;
         }
 
-        .message-body a {
-            color: #4da6ff;
-            text-decoration: underline;
+        .message-body img {
+            max-width: 100%;
+            max-height: 250px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-top: 6px;
+            cursor: pointer;
+            display: block;
         }
-        .message-body a:hover {
-            color: #80bfff;
-        }
+
+        .message-body a { color: #4da6ff; text-decoration: underline; }
+        .message-body a:hover { color: #80bfff; }
 
         .message-time {
             font-size: 10px;
@@ -191,128 +204,471 @@
             padding: 12px;
             background: #181818;
             border-top: 2px solid #333;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
         }
 
         .chat-input-area input[type="text"] {
             flex: 1;
-            padding: 10px;
+            padding: 10px 14px;
             background: #2a2a2a;
             border: 2px solid #555;
             color: white;
-            border-radius: 6px;
+            border-radius: 12px;
             outline: none;
             font-size: 14px;
         }
 
-        .chat-input-area button {
-            background: #8b00ff; /* Chuyển nút Gửi thành màu tím */
+        .icon-upload-btn {
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 9px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .icon-upload-btn:hover { background: #444; }
+
+        .chat-input-area button.send-btn {
+            background: #3498db;
             color: white;
             border: none;
             padding: 10px 20px;
-            margin-left: 8px;
-            border-radius: 6px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: bold;
+            transition: background 0.2s;
+        }
+        .chat-input-area button.send-btn:hover { background: #2980b9; }
+
+        /* Modal Hộp thoại */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #1e1e1e;
+            border: 2px solid #444;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #fff;
+        }
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .modal-body label {
+            font-size: 13px;
+            color: #ccc;
+        }
+        .modal-body input[type="text"], .modal-body input[type="password"] {
+            padding: 10px 14px;
+            background: #2a2a2a;
+            border: 1px solid #555;
+            color: #fff;
+            border-radius: 10px;
+            outline: none;
+            font-size: 14px;
+        }
+        .password-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .password-box input {
+            width: 100%;
+            padding-right: 45px;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .toggle-password:hover { color: #fff; }
+        
+        .modal-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            width: 100%;
+        }
+        .modal-btn.primary { background: #3498db; color: white; }
+        .modal-btn.primary:hover { background: #2980b9; }
+        .modal-btn.secondary { background: #333; color: #ccc; border: 1px solid #555; }
+        .modal-btn.secondary:hover { background: #444; color: #fff; }
+
+        .auth-note {
+            font-size: 12px;
+            color: #3498db;
+            background: rgba(52, 152, 219, 0.1);
+            padding: 8px;
+            border-radius: 6px;
+            border-left: 3px solid #3498db;
         }
 
-        .chat-input-area button:hover {
-            background: #9d22ff;
+        .color-picker-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .color-picker-group input[type="color"] {
+            border: none;
+            width: 40px;
+            height: 35px;
+            border-radius: 6px;
+            cursor: pointer;
+            background: transparent;
         }
     </style>
 </head>
 <body>
 
 <div class="chat-container">
+    <div class="browser-tabs">
+        <div class="browser-tab active" onclick="switchTab('tab-general', this)">💬 Chat Tổng Hợp</div>
+        <div class="browser-tab" onclick="switchTab('tab-admin', this)">🔒 Nhắn Riêng Admin</div>
+        <div class="browser-tab" onclick="switchTab('tab-news', this)">📢 Kênh Thông Báo</div>
+    </div>
+
     <div class="chat-header">
-        <span>Phòng Chatbox Support Traidz</span>
+        <span id="room-title">Phòng Chat Support Traidz</span>
         <div class="user-settings">
-            <span id="user-label">Tên: ...</span>
-            <button class="action-btn" onclick="changeUsername()">Đổi tên</button>
-            <button class="action-btn" onclick="exportChatFile()" title="Lưu lịch sử ra file văn bản">💾 Lưu File</button>
-            <button class="action-btn" onclick="document.getElementById('importFile').click()" title="Mở file lịch sử cũ">📂 Tải File</button>
+            <span id="user-label">Tài khoản: ...</span>
+            <button class="action-btn" onclick="openWelcomeModal()" title="Đăng nhập / Đăng ký">🔄 Đổi Tài Khoản</button>
+            <button class="action-btn" onclick="exportChatFile()" title="Lưu lịch sử">💾 Lưu</button>
+            <button class="action-btn" onclick="document.getElementById('importFile').click()" title="Tải file">📂 Tải</button>
             <input type="file" id="importFile" style="display: none" accept=".txt" onchange="importChatFile(event)">
         </div>
     </div>
 
-    <div class="chat-messages" id="messagesList"></div>
+    <div id="tab-general" class="tab-content active">
+        <div class="chat-messages" id="messagesList-general"></div>
+        <div class="chat-input-area">
+            <button class="icon-upload-btn" onclick="document.getElementById('fileInput-general').click()" title="Gửi ảnh/tệp">📎</button>
+            <input type="file" id="fileInput-general" style="display: none" accept="image/*,.pdf,.doc,.docx,.txt" onchange="handleFileUpload(event, 'general')">
+            <input type="text" id="messageInput-general" placeholder="Nhập tin nhắn..." onkeypress="handleKeyPress(event, 'general')">
+            <button class="send-btn" onclick="postMessage('general')">Gửi</button>
+        </div>
+    </div>
 
-    <div class="chat-input-area">
-        <input type="text" id="messageInput" placeholder="Nhập tin nhắn hoặc dán link..." onkeypress="handleKeyPress(event)">
-        <button onclick="postMessage()">Gửi</button>
+    <div id="tab-admin" class="tab-content">
+        <div class="chat-messages" id="messagesList-admin"></div>
+        <div class="chat-input-area">
+            <button class="icon-upload-btn" onclick="document.getElementById('fileInput-admin').click()" title="Gửi ảnh/tệp">📎</button>
+            <input type="file" id="fileInput-admin" style="display: none" accept="image/*,.pdf,.doc,.docx,.txt" onchange="handleFileUpload(event, 'admin')">
+            <input type="text" id="messageInput-admin" placeholder="Nhắn riêng với Admin..." onkeypress="handleKeyPress(event, 'admin')">
+            <button class="send-btn" onclick="postMessage('admin')">Gửi</button>
+        </div>
+    </div>
+
+    <div id="tab-news" class="tab-content">
+        <div class="chat-messages" id="messagesList-news"></div>
+        <div class="chat-input-area" id="news-input-area" style="display: none;">
+            <button class="icon-upload-btn" onclick="document.getElementById('fileInput-news').click()" title="Gửi ảnh/tệp">📎</button>
+            <input type="file" id="fileInput-news" style="display: none" accept="image/*,.pdf,.doc,.docx,.txt" onchange="handleFileUpload(event, 'news')">
+            <input type="text" id="messageInput-news" placeholder="Đăng thông báo mới (Chỉ Admin)..." onkeypress="handleKeyPress(event, 'news')">
+            <button class="send-btn" onclick="postMessage('news')">Đăng</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 1: Màn hình chào mừng (Chọn Đăng Ký hoặc Đăng Nhập) -->
+<div class="modal-overlay" id="welcomeModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span>Hệ Thống Xác Thực</span>
+        </div>
+        <div class="modal-body">
+            <div class="auth-note">
+                👋 Chào mừng bạn đến với phòng chat! Vui lòng chọn hành động tiếp tục bên dưới.
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn primary" onclick="showRegisterForm()">📝 Đăng Ký Tài Khoản Mới</button>
+            <button class="modal-btn secondary" onclick="showLoginForm()">🔑 Đăng Nhập Tài Khoản</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: Form Đăng Ký / Đăng Nhập cụ thể -->
+<div class="modal-overlay" id="authModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span id="modalTitle">Đăng Ký Tài Khoản</span>
+        </div>
+        <div class="modal-body">
+            <div class="auth-note" id="authNoteText">
+                Điền thông tin để tạo tài khoản mới của bạn.
+            </div>
+            
+            <label for="inputAuthName">Tên hiển thị:</label>
+            <input type="text" id="inputAuthName" placeholder="Nhập tên của bạn...">
+            
+            <label for="inputAuthPass">Mật khẩu:</label>
+            <div class="password-box">
+                <input type="password" id="inputAuthPass" placeholder="Nhập mật khẩu...">
+                <button type="button" class="toggle-password" id="togglePassBtn" onclick="togglePasswordVisibility()">👁️</button>
+            </div>
+
+            <div id="colorConfigSection">
+                <label>Màu sắc tên của bạn:</label>
+                <div class="color-picker-group">
+                    <input type="color" id="inputAuthColor" value="#3498db">
+                    <span style="font-size: 12px; color: #aaa;">Chọn màu hiển thị tên</span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn primary" id="authSubmitBtn" onclick="submitAuth()">Xác Nhận</button>
+            <button class="modal-btn secondary" onclick="openWelcomeModal()">Quay Lại</button>
+        </div>
     </div>
 </div>
 
 <script>
     const MY_NAME = "Traidz";
-    const ADMIN_CODE = "ADMINMOD123";
     let username = "";
+    let userColor = "#3498db";
+    let activeTab = "general";
+    let authMode = "register"; // 'register' hoặc 'login'
 
-    function checkUser() {
-        username = localStorage.getItem('chat_username');
-        if (!username || username.trim() === "") {
-            askForName();
+    function checkUserSession() {
+        let savedUser = localStorage.getItem('chat_current_user');
+        let savedColor = localStorage.getItem('chat_current_color');
+
+        let accounts = JSON.parse(localStorage.getItem('chat_accounts_db')) || {};
+        // Đảm bảo tài khoản Admin Traidz luôn tồn tại sẵn không cần đăng ký
+        if (!accounts[MY_NAME.toLowerCase()]) {
+            accounts[MY_NAME.toLowerCase()] = "admin";
+            localStorage.setItem('chat_accounts_db', JSON.stringify(accounts));
+        }
+
+        if (!savedUser) {
+            openWelcomeModal();
         } else {
+            username = savedUser;
+            userColor = savedColor || "#3498db";
+            document.getElementById('welcomeModal').style.display = 'none';
+            document.getElementById('authModal').style.display = 'none';
             updateUserLabel();
+            checkAdminNewsPermission();
+            loadAllMessages();
         }
     }
 
-    function askForName() {
-        let inputName = prompt("Mời bạn nhập tên hiển thị trong phòng chat:", "Khách_" + Math.floor(Math.random() * 1000));
-        if (!inputName || inputName.trim() === "") {
-            inputName = "Khách_" + Math.floor(Math.random() * 1000);
-        }
+    function openWelcomeModal() {
+        document.getElementById('authModal').style.display = 'none';
+        document.getElementById('welcomeModal').style.display = 'flex';
+    }
 
-        if (inputName.trim().toLowerCase() === MY_NAME.toLowerCase()) {
-            let codeInput = prompt("Bạn đang chọn tên 'Traidz' (Admin). Vui lòng nhập mã xác minh để tiếp tục:");
-            if (codeInput === ADMIN_CODE) {
-                username = MY_NAME;
-            } else {
-                alert("Mã xác minh không chính xác! Tên của bạn đã được chuyển về khách mặc định.");
-                username = "Khách_" + Math.floor(Math.random() * 1000);
-            }
+    function showRegisterForm() {
+        authMode = "register";
+        document.getElementById('welcomeModal').style.display = 'none';
+        document.getElementById('modalTitle').innerText = "Đăng Ký Tài Khoản Mới";
+        document.getElementById('authNoteText').innerText = "✨ Nhập tên và tự đặt mật khẩu để đăng ký tài khoản mới.";
+        document.getElementById('colorConfigSection').style.display = 'block';
+        document.getElementById('authSubmitBtn').innerText = "Đăng Ký Ngay";
+        
+        document.getElementById('inputAuthName').value = "";
+        document.getElementById('inputAuthPass').value = "";
+        document.getElementById('inputAuthColor').value = "#3498db";
+        document.getElementById('authModal').style.display = 'flex';
+    }
+
+    function showLoginForm() {
+        authMode = "login";
+        document.getElementById('welcomeModal').style.display = 'none';
+        document.getElementById('modalTitle').innerText = "Đăng Nhập Tài Khoản";
+        document.getElementById('authNoteText').innerText = "🔑 Nhập chính xác tên và mật khẩu đã đăng ký để vào phòng chat.";
+        document.getElementById('colorConfigSection').style.display = 'none'; // Đăng nhập dùng màu cũ hoặc mặc định
+        document.getElementById('authSubmitBtn').innerText = "Đăng Nhập";
+        
+        document.getElementById('inputAuthName').value = "";
+        document.getElementById('inputAuthPass').value = "";
+        document.getElementById('authModal').style.display = 'flex';
+    }
+
+    function togglePasswordVisibility() {
+        const passInput = document.getElementById('inputAuthPass');
+        const btn = document.getElementById('togglePassBtn');
+        if (passInput.type === "password") {
+            passInput.type = "text";
+            btn.innerText = "🙈";
         } else {
-            username = inputName.trim();
+            passInput.type = "password";
+            btn.innerText = "👁️";
         }
-
-        localStorage.setItem('chat_username', username);
-        updateUserLabel();
     }
 
-    function changeUsername() {
-        let newName = prompt("Nhập tên mới của bạn:", username);
-        if (!newName || newName.trim() === "") return;
+    function submitAuth() {
+        let inputName = document.getElementById('inputAuthName').value.trim();
+        let inputPass = document.getElementById('inputAuthPass').value.trim();
+        let inputColor = document.getElementById('inputAuthColor').value;
 
-        if (newName.trim().toLowerCase() === MY_NAME.toLowerCase()) {
-            let codeInput = prompt("Bạn đang cố dùng tên 'Traidz' (Admin). Nhập mã xác minh:");
-            if (codeInput === ADMIN_CODE) {
-                username = MY_NAME;
-            } else {
-                alert("Mã xác minh sai! Không thể đổi sang tên này.");
+        if (!inputName) {
+            alert("Vui lòng nhập tên hiển thị!");
+            return;
+        }
+
+        if (!inputPass) {
+            alert("Vui lòng nhập mật khẩu!");
+            return;
+        }
+
+        let accounts = JSON.parse(localStorage.getItem('chat_accounts_db')) || {};
+        let userKey = inputName.toLowerCase();
+
+        // Riêng tài khoản Admin Traidz cho phép vào thẳng không cần mật khẩu rườm rà nếu muốn
+        if (userKey === MY_NAME.toLowerCase()) {
+            username = MY_NAME;
+            userColor = "#ff4757";
+            saveAndEnterSession();
+            return;
+        }
+
+        if (authMode === "register") {
+            if (accounts[userKey]) {
+                alert("Tên tài khoản này đã được người khác đăng ký rồi! Vui lòng chọn tên khác hoặc chọn chế độ Đăng Nhập.");
                 return;
             }
-        } else {
-            username = newName.trim();
-        }
+            if (inputPass.length < 3) {
+                alert("Mật khẩu phải có ít nhất 3 ký tự!");
+                return;
+            }
 
-        localStorage.setItem('chat_username', username);
+            // Lưu tài khoản mới
+            accounts[userKey] = inputPass;
+            localStorage.setItem('chat_accounts_db', JSON.stringify(accounts));
+
+            username = inputName;
+            userColor = inputColor;
+            saveAndEnterSession();
+
+        } else {
+            // Chế độ đăng nhập: Bắt buộc đúng tên và đúng mật khẩu
+            if (!accounts[userKey]) {
+                alert("Tên tài khoản này chưa tồn tại trong hệ thống! Vui lòng kiểm tra lại hoặc chuyển sang Đăng Ký.");
+                return;
+            }
+
+            if (accounts[userKey] === inputPass) {
+                username = inputName;
+                // Nếu đăng nhập thì giữ lại màu cũ hoặc mặc định
+                userColor = localStorage.getItem(`chat_color_${userKey}`) || "#3498db";
+                saveAndEnterSession();
+            } else {
+                alert("Sai mật khẩu! Vui lòng kiểm tra lại mật khẩu của bạn.");
+            }
+        }
+    }
+
+    function saveAndEnterSession() {
+        localStorage.setItem('chat_current_user', username);
+        localStorage.setItem('chat_current_color', userColor);
+        localStorage.setItem(`chat_color_${username.toLowerCase()}`, userColor);
+
+        document.getElementById('welcomeModal').style.display = 'none';
+        document.getElementById('authModal').style.display = 'none';
         updateUserLabel();
+        checkAdminNewsPermission();
+        loadAllMessages();
     }
 
     function updateUserLabel() {
         const userLabel = document.getElementById('user-label');
         if (username.toLowerCase() === MY_NAME.toLowerCase()) {
-            userLabel.innerHTML = `Tên: <span class="traidz-name">Traidz</span>`;
+            userLabel.innerHTML = `Tài khoản: <span style="color: #ff4757; font-weight: bold;">Traidz</span>`;
         } else {
-            userLabel.innerHTML = `Tên: <span style="color: #ff0000; font-weight: bold;">${escapeHTML(username)}</span>`;
+            userLabel.innerHTML = `Tài khoản: <span style="color: ${userColor}; font-weight: bold;">${escapeHTML(username)}</span>`;
         }
     }
 
-    function postMessage() {
-        const input = document.getElementById('messageInput');
+    function checkAdminNewsPermission() {
+        const newsInputArea = document.getElementById('news-input-area');
+        if (username.toLowerCase() === MY_NAME.toLowerCase()) {
+            newsInputArea.style.display = 'flex';
+        } else {
+            newsInputArea.style.display = 'none';
+        }
+    }
+
+    function switchTab(tabId, element) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.browser-tab').forEach(el => el.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        element.classList.add('active');
+
+        activeTab = tabId.replace('tab-', '');
+        loadMessages(activeTab);
+    }
+
+    function postMessage(room) {
+        const input = document.getElementById(`messageInput-${room}`);
         const text = input.value.trim();
         if (text === "") return;
 
-        let messages = JSON.parse(localStorage.getItem('chat_messages_v9')) || [];
+        saveAndRenderMessage(room, text, "text");
+        input.value = "";
+    }
+
+    function handleFileUpload(event, room) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const fileData = e.target.result;
+            let contentHtml = "";
+
+            if (file.type.startsWith('image/')) {
+                contentHtml = `<img src="${fileData}" alt="${escapeHTML(file.name)}">`;
+            } else {
+                contentHtml = `📁 <a href="${fileData}" download="${escapeHTML(file.name)}">${escapeHTML(file.name)}</a>`;
+            }
+
+            saveAndRenderMessage(room, contentHtml, "html");
+        };
+        reader.readAsDataURL(file);
+        event.target.value = "";
+    }
+
+    function saveAndRenderMessage(room, content, type) {
+        let storageKey = `chat_messages_v13_${room}`;
+        let messages = JSON.parse(localStorage.getItem(storageKey)) || [];
 
         const now = new Date();
         const dateStr = now.toLocaleDateString();
@@ -320,21 +676,22 @@
 
         const newMessage = {
             name: username,
-            content: text,
+            color: userColor,
+            content: content,
+            type: type,
             date: dateStr,
             time: timeStr
         };
 
         messages.push(newMessage);
-        localStorage.setItem('chat_messages_v9', JSON.stringify(messages));
-
-        input.value = "";
-        loadMessages();
+        localStorage.setItem(storageKey, JSON.stringify(messages));
+        loadMessages(room);
     }
 
-    function loadMessages() {
-        const messagesList = document.getElementById('messagesList');
-        const messages = JSON.parse(localStorage.getItem('chat_messages_v9')) || [];
+    function loadMessages(room) {
+        const messagesList = document.getElementById(`messagesList-${room}`);
+        let storageKey = `chat_messages_v13_${room}`;
+        const messages = JSON.parse(localStorage.getItem(storageKey)) || [];
 
         messagesList.innerHTML = "";
 
@@ -347,17 +704,24 @@
             let badgeHtml = "";
 
             if (msg.name.toLowerCase() === MY_NAME.toLowerCase()) {
-                nameHtml = `<span class="traidz-name">Traidz</span>`;
+                nameHtml = `<span style="color: #ff4757; font-weight: bold;">Traidz</span>`;
                 badgeHtml = `
                     <span class="admin-badge" title="Tài khoản chính chủ Traidz">
                         <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
                     </span>
                 `;
             } else {
-                nameHtml = `<span style="color: #ff0000; font-weight: bold;">${escapeHTML(msg.name)}</span>`;
+                let col = msg.color || "#3498db";
+                nameHtml = `<span style="color: ${col}; font-weight: bold;">${escapeHTML(msg.name)}</span>`;
             }
 
-            const formattedContent = linkify(escapeHTML(msg.content));
+            let bodyContent = "";
+            if (msg.type === "html") {
+                bodyContent = msg.content;
+            } else {
+                bodyContent = linkify(escapeHTML(msg.content));
+            }
+
             const displayTime = msg.date ? `${msg.date} - ${msg.time}` : msg.time;
 
             div.innerHTML = `
@@ -365,7 +729,7 @@
                     ${nameHtml}
                     ${badgeHtml}
                 </div>
-                <div class="message-body">${formattedContent}</div>
+                <div class="message-body">${bodyContent}</div>
                 <div class="message-time">${displayTime}</div>
             `;
             messagesList.appendChild(div);
@@ -374,98 +738,10 @@
         messagesList.scrollTop = messagesList.scrollHeight;
     }
 
-    // Xuất file văn bản (.txt) kèm đầy đủ nội dung dòng tin nhắn cũ
-    function exportChatFile() {
-        const messages = JSON.parse(localStorage.getItem('chat_messages_v9')) || [];
-        if (messages.length === 0) {
-            alert("Chưa có tin nhắn nào để lưu!");
-            return;
-        }
-
-        let customName = prompt("Nhập tên file bạn muốn lưu:", "lich-su-chat");
-        if (!customName || customName.trim() === "") return;
-        
-        let fileName = customName.trim();
-        if (!fileName.endsWith('.txt')) {
-            fileName += '.txt';
-        }
-
-        // Lưu kèm cả JSON ngầm dưới đuôi file txt để khi tải lên lại sẽ giữ nguyên toàn bộ dữ liệu chính xác 100%
-        let textContent = "=== LICH SU TIN NHAN DINH DANG VAN BAN ===\n";
-        messages.forEach(msg => {
-            const displayTime = msg.date ? `${msg.date} ${msg.time}` : msg.time;
-            textContent += `[${displayTime}] ${msg.name}: ${msg.content}\n`;
-        });
-        textContent += "\n=== JSON_DATA_START ===\n" + JSON.stringify(messages) + "\n=== JSON_DATA_END ===";
-
-        const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        URL.revokeObjectURL(url);
-    }
-
-    // Tải file văn bản (.txt) lên và khôi phục hiển thị toàn bộ tin nhắn trước đó
-    function importChatFile(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const content = e.target.result;
-                let messages = [];
-
-                // Kiểm tra xem file txt có chứa khối JSON ngầm không để khôi phục chính xác tuyệt đối
-                if (content.includes("=== JSON_DATA_START ===")) {
-                    try {
-                        const jsonPart = content.split("=== JSON_DATA_START ===")[1].split("=== JSON_DATA_END ===")[0].trim();
-                        messages = JSON.parse(jsonPart);
-                    } catch (err) {
-                        messages = [];
-                    }
-                }
-
-                // Nếu không có khối JSON ngầm, tiến hành đọc bóc tách từng dòng văn bản
-                if (!messages || messages.length === 0) {
-                    const lines = content.split('\n');
-                    lines.forEach(line => {
-                        const match = line.match(/^\[(.*?)\]\s(.*?):\s(.*)$/);
-                        if (match) {
-                            const fullTime = match[1];
-                            const name = match[2];
-                            const text = match[3];
-                            let date = "";
-                            let time = fullTime;
-                            if (fullTime.includes(' ')) {
-                                const parts = fullTime.split(' ');
-                                date = parts[0];
-                                time = parts[1];
-                            }
-                            messages.push({
-                                name: name,
-                                content: text,
-                                date: date,
-                                time: time
-                            });
-                        }
-                    });
-                }
-
-                if (Array.isArray(messages) && messages.length > 0) {
-                    localStorage.setItem('chat_messages_v9', JSON.stringify(messages));
-                    loadMessages();
-                    alert("Đã khôi phục thành công lịch sử văn bản từ file!");
-                } else {
-                    alert("Không tìm thấy dòng tin nhắn hợp lệ trong file này!");
-                }
-            } catch (err) {
-                alert("Lỗi đọc file văn bản!");
-            }
-        };
-        reader.readAsText(file);
+    function loadAllMessages() {
+        loadMessages('general');
+        loadMessages('admin');
+        loadMessages('news');
     }
 
     function linkify(inputText) {
@@ -479,9 +755,9 @@
         return replacedText;
     }
 
-    function handleKeyPress(event) {
+    function handleKeyPress(event, room) {
         if (event.key === 'Enter') {
-            postMessage();
+            postMessage(room);
         }
     }
 
@@ -491,9 +767,63 @@
         );
     }
 
+    function exportChatFile() {
+        let exportData = {
+            accounts: JSON.parse(localStorage.getItem('chat_accounts_db')) || {},
+            general: JSON.parse(localStorage.getItem('chat_messages_v13_general')) || [],
+            admin: JSON.parse(localStorage.getItem('chat_messages_v13_admin')) || [],
+            news: JSON.parse(localStorage.getItem('chat_messages_v13_news')) || []
+        };
+
+        let customName = prompt("Nhập tên file muốn lưu:", "du-lieu-chat-va-tai-khoan");
+        if (!customName || customName.trim() === "") return;
+        
+        let fileName = customName.trim();
+        if (!fileName.endsWith('.txt')) fileName += '.txt';
+
+        let textContent = "=== CHAT SYSTEM BACKUP ===\n";
+        textContent += "=== JSON_DATA_START ===\n" + JSON.stringify(exportData) + "\n=== JSON_DATA_END ===";
+
+        const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function importChatFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const content = e.target.result;
+                if (content.includes("=== JSON_DATA_START ===")) {
+                    const jsonPart = content.split("=== JSON_DATA_START ===")[1].split("=== JSON_DATA_END ===")[0].trim();
+                    const data = JSON.parse(jsonPart);
+
+                    if (data.accounts) localStorage.setItem('chat_accounts_db', JSON.stringify(data.accounts));
+                    if (data.general) localStorage.setItem('chat_messages_v13_general', JSON.stringify(data.general));
+                    if (data.admin) localStorage.setItem('chat_messages_v13_admin', JSON.stringify(data.admin));
+                    if (data.news) localStorage.setItem('chat_messages_v13_news', JSON.stringify(data.news));
+
+                    alert("Khôi phục thành công! Vui lòng tải lại trang.");
+                    location.reload();
+                } else {
+                    alert("File không hợp lệ hoặc sai định dạng lưu trữ!");
+                }
+            } catch (err) {
+                alert("Lỗi đọc file!");
+            }
+        };
+        reader.readAsText(file);
+    }
+
     window.onload = function() {
-        checkUser();
-        loadMessages();
+        checkUserSession();
     };
 </script>
 
