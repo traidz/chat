@@ -11,6 +11,21 @@
             100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
+        /* Hiệu ứng chữ cầu vồng cho Admin Traidz */
+        @keyframes rainbowAnimation {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .rainbow-name {
+            background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbowAnimation 5s ease infinite;
+            font-weight: bold;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #121212;
@@ -405,7 +420,7 @@
     </div>
 </div>
 
-<!-- Modal 1: Màn hình chào mừng (Chọn Đăng Ký hoặc Đăng Nhập) -->
+<!-- Modal 1: Màn hình chào mừng -->
 <div class="modal-overlay" id="welcomeModal">
     <div class="modal-content">
         <div class="modal-header">
@@ -418,12 +433,12 @@
         </div>
         <div class="modal-footer">
             <button class="modal-btn primary" onclick="showRegisterForm()">📝 Đăng Ký Tài Khoản Mới</button>
-            <button class="modal-btn secondary" onclick="showLoginForm()">🔑 Đăng Nhập Tài Khoản</button>
+            <button class="modal-btn secondary" onclick="showLoginStep1()">🔑 Đăng Nhập Tài Khoản</button>
         </div>
     </div>
 </div>
 
-<!-- Modal 2: Form Đăng Ký / Đăng Nhập cụ thể -->
+<!-- Modal 2: Form Đăng Ký / Đăng Nhập -->
 <div class="modal-overlay" id="authModal">
     <div class="modal-content">
         <div class="modal-header">
@@ -434,20 +449,31 @@
                 Điền thông tin để tạo tài khoản mới của bạn.
             </div>
             
-            <label for="inputAuthName">Tên hiển thị:</label>
+            <!-- Ô nhập tên (Dùng chung cho cả Đăng ký và Đăng nhập Bước 1) -->
+            <label for="inputAuthName" id="labelAuthName">Tên hiển thị:</label>
             <input type="text" id="inputAuthName" placeholder="Nhập tên của bạn...">
-            
-            <label for="inputAuthPass">Mật khẩu:</label>
-            <div class="password-box">
-                <input type="password" id="inputAuthPass" placeholder="Nhập mật khẩu...">
-                <button type="button" class="toggle-password" id="togglePassBtn" onclick="togglePasswordVisibility()">👁️</button>
-            </div>
 
-            <div id="colorConfigSection">
+            <!-- Các phần riêng cho Đăng Ký -->
+            <div id="registerExtraFields">
+                <label for="inputAuthPassReg">Mật khẩu:</label>
+                <div class="password-box">
+                    <input type="password" id="inputAuthPassReg" placeholder="Nhập mật khẩu...">
+                    <button type="button" class="toggle-password" id="togglePassRegBtn" onclick="togglePasswordVisibility('inputAuthPassReg', 'togglePassRegBtn')">👁️</button>
+                </div>
+
                 <label>Màu sắc tên của bạn:</label>
                 <div class="color-picker-group">
                     <input type="color" id="inputAuthColor" value="#3498db">
                     <span style="font-size: 12px; color: #aaa;">Chọn màu hiển thị tên</span>
+                </div>
+            </div>
+
+            <!-- Các phần riêng cho Đăng Nhập Bước 2 -->
+            <div id="loginStep2Fields" style="display: none;">
+                <label for="inputAuthPassLogin" id="labelAuthPassLogin">Mật khẩu:</label>
+                <div class="password-box">
+                    <input type="password" id="inputAuthPassLogin" placeholder="Nhập mật khẩu...">
+                    <button type="button" class="toggle-password" id="togglePassLoginBtn" onclick="togglePasswordVisibility('inputAuthPassLogin', 'togglePassLoginBtn')">👁️</button>
                 </div>
             </div>
         </div>
@@ -460,19 +486,24 @@
 
 <script>
     const MY_NAME = "Traidz";
+    // Mật khẩu chuẩn ngầm định của tài khoản Admin Traidz:
+    const ADMIN_SECRET_CODE = "ADMINMOD123"; 
+
     let username = "";
     let userColor = "#3498db";
     let activeTab = "general";
-    let authMode = "register"; // 'register' hoặc 'login'
+    let authMode = "register"; // 'register', 'login_step1', 'login_step2'
+    let tempLoginName = "";
 
     function checkUserSession() {
         let savedUser = localStorage.getItem('chat_current_user');
         let savedColor = localStorage.getItem('chat_current_color');
 
         let accounts = JSON.parse(localStorage.getItem('chat_accounts_db')) || {};
-        // Đảm bảo tài khoản Admin Traidz luôn tồn tại sẵn không cần đăng ký
+        
+        // Khởi tạo sẵn tài khoản Admin Traidz vào bộ nhớ ngầm
         if (!accounts[MY_NAME.toLowerCase()]) {
-            accounts[MY_NAME.toLowerCase()] = "admin";
+            accounts[MY_NAME.toLowerCase()] = ADMIN_SECRET_CODE;
             localStorage.setItem('chat_accounts_db', JSON.stringify(accounts));
         }
 
@@ -499,31 +530,57 @@
         document.getElementById('welcomeModal').style.display = 'none';
         document.getElementById('modalTitle').innerText = "Đăng Ký Tài Khoản Mới";
         document.getElementById('authNoteText').innerText = "✨ Nhập tên và tự đặt mật khẩu để đăng ký tài khoản mới.";
-        document.getElementById('colorConfigSection').style.display = 'block';
+        
+        document.getElementById('registerExtraFields').style.display = 'block';
+        document.getElementById('loginStep2Fields').style.display = 'none';
         document.getElementById('authSubmitBtn').innerText = "Đăng Ký Ngay";
         
         document.getElementById('inputAuthName').value = "";
-        document.getElementById('inputAuthPass').value = "";
+        document.getElementById('inputAuthPassReg').value = "";
         document.getElementById('inputAuthColor').value = "#3498db";
         document.getElementById('authModal').style.display = 'flex';
     }
 
-    function showLoginForm() {
-        authMode = "login";
+    function showLoginStep1() {
+        authMode = "login_step1";
         document.getElementById('welcomeModal').style.display = 'none';
-        document.getElementById('modalTitle').innerText = "Đăng Nhập Tài Khoản";
-        document.getElementById('authNoteText').innerText = "🔑 Nhập chính xác tên và mật khẩu đã đăng ký để vào phòng chat.";
-        document.getElementById('colorConfigSection').style.display = 'none'; // Đăng nhập dùng màu cũ hoặc mặc định
-        document.getElementById('authSubmitBtn').innerText = "Đăng Nhập";
+        document.getElementById('modalTitle').innerText = "Đăng Nhập - Bước 1";
+        document.getElementById('authNoteText').innerText = "👤 Vui lòng nhập tên người dùng để tiếp tục.";
+        
+        document.getElementById('registerExtraFields').style.display = 'none';
+        document.getElementById('loginStep2Fields').style.display = 'none';
+        document.getElementById('authSubmitBtn').innerText = "Tiếp Tục";
         
         document.getElementById('inputAuthName').value = "";
-        document.getElementById('inputAuthPass').value = "";
         document.getElementById('authModal').style.display = 'flex';
     }
 
-    function togglePasswordVisibility() {
-        const passInput = document.getElementById('inputAuthPass');
-        const btn = document.getElementById('togglePassBtn');
+    function showLoginStep2(enteredName) {
+        authMode = "login_step2";
+        tempLoginName = enteredName;
+        document.getElementById('modalTitle').innerText = "Đăng Nhập - Bước 2";
+        
+        // Kiểm tra nếu là tên admin thì yêu cầu nhập mã code admin một cách bảo mật
+        if (enteredName.toLowerCase() === MY_NAME.toLowerCase()) {
+            document.getElementById('authNoteText').innerText = "🔒 Yêu cầu nhập mã code admin để xác thực tài khoản.";
+            document.getElementById('labelAuthPassLogin').innerText = "Mã Code Admin:";
+            document.getElementById('inputAuthPassLogin').placeholder = "Nhập mã code admin...";
+        } else {
+            document.getElementById('authNoteText').innerText = `🔑 Nhập mật khẩu cho tài khoản: ${enteredName}`;
+            document.getElementById('labelAuthPassLogin').innerText = "Mật khẩu:";
+            document.getElementById('inputAuthPassLogin').placeholder = "Nhập mật khẩu...";
+        }
+
+        document.getElementById('registerExtraFields').style.display = 'none';
+        document.getElementById('loginStep2Fields').style.display = 'block';
+        document.getElementById('authSubmitBtn').innerText = "Đăng Nhập";
+        
+        document.getElementById('inputAuthPassLogin').value = "";
+    }
+
+    function togglePasswordVisibility(inputId, btnId) {
+        const passInput = document.getElementById(inputId);
+        const btn = document.getElementById(btnId);
         if (passInput.type === "password") {
             passInput.type = "text";
             btn.innerText = "🙈";
@@ -534,34 +591,25 @@
     }
 
     function submitAuth() {
-        let inputName = document.getElementById('inputAuthName').value.trim();
-        let inputPass = document.getElementById('inputAuthPass').value.trim();
-        let inputColor = document.getElementById('inputAuthColor').value;
-
-        if (!inputName) {
-            alert("Vui lòng nhập tên hiển thị!");
-            return;
-        }
-
-        if (!inputPass) {
-            alert("Vui lòng nhập mật khẩu!");
-            return;
-        }
-
         let accounts = JSON.parse(localStorage.getItem('chat_accounts_db')) || {};
-        let userKey = inputName.toLowerCase();
-
-        // Riêng tài khoản Admin Traidz cho phép vào thẳng không cần mật khẩu rườm rà nếu muốn
-        if (userKey === MY_NAME.toLowerCase()) {
-            username = MY_NAME;
-            userColor = "#ff4757";
-            saveAndEnterSession();
-            return;
-        }
 
         if (authMode === "register") {
+            let inputName = document.getElementById('inputAuthName').value.trim();
+            let inputPass = document.getElementById('inputAuthPassReg').value.trim();
+            let inputColor = document.getElementById('inputAuthColor').value;
+
+            if (!inputName) {
+                alert("Vui lòng nhập tên hiển thị!");
+                return;
+            }
+            if (!inputPass) {
+                alert("Vui lòng nhập mật khẩu!");
+                return;
+            }
+
+            let userKey = inputName.toLowerCase();
             if (accounts[userKey]) {
-                alert("Tên tài khoản này đã được người khác đăng ký rồi! Vui lòng chọn tên khác hoặc chọn chế độ Đăng Nhập.");
+                alert("Tên tài khoản này đã được đăng ký! Vui lòng chọn tên khác hoặc chọn Đăng Nhập.");
                 return;
             }
             if (inputPass.length < 3) {
@@ -569,7 +617,6 @@
                 return;
             }
 
-            // Lưu tài khoản mới
             accounts[userKey] = inputPass;
             localStorage.setItem('chat_accounts_db', JSON.stringify(accounts));
 
@@ -577,20 +624,50 @@
             userColor = inputColor;
             saveAndEnterSession();
 
-        } else {
-            // Chế độ đăng nhập: Bắt buộc đúng tên và đúng mật khẩu
-            if (!accounts[userKey]) {
-                alert("Tên tài khoản này chưa tồn tại trong hệ thống! Vui lòng kiểm tra lại hoặc chuyển sang Đăng Ký.");
+        } else if (authMode === "login_step1") {
+            let inputName = document.getElementById('inputAuthName').value.trim();
+            if (!inputName) {
+                alert("Vui lòng nhập tên người dùng!");
                 return;
             }
 
+            let userKey = inputName.toLowerCase();
+            if (userKey !== MY_NAME.toLowerCase() && !accounts[userKey]) {
+                alert("Tên tài khoản này chưa tồn tại trong hệ thống! Vui lòng kiểm tra lại hoặc Đăng Ký.");
+                return;
+            }
+
+            // Chuyển sang bước 2 bảo mật
+            showLoginStep2(inputName);
+
+        } else if (authMode === "login_step2") {
+            let inputPass = document.getElementById('inputAuthPassLogin').value.trim();
+            if (!inputPass) {
+                alert("Vui lòng nhập mật khẩu / mã code!");
+                return;
+            }
+
+            let userKey = tempLoginName.toLowerCase();
+
+            // Kiểm tra đăng nhập cho tài khoản Admin Traidz (Ép buộc nhận mã chuẩn ADMINMOD123)
+            if (userKey === MY_NAME.toLowerCase()) {
+                if (inputPass === ADMIN_SECRET_CODE) {
+                    username = MY_NAME;
+                    userColor = "rainbow"; // Kích hoạt màu cầu vồng
+                    saveAndEnterSession();
+                } else {
+                    alert("Sai mã code admin! Vui lòng kiểm tra lại.");
+                }
+                return;
+            }
+
+            // Kiểm tra đăng nhập thành viên thường
             if (accounts[userKey] === inputPass) {
-                username = inputName;
-                // Nếu đăng nhập thì giữ lại màu cũ hoặc mặc định
+                username = tempLoginName;
                 userColor = localStorage.getItem(`chat_color_${userKey}`) || "#3498db";
                 saveAndEnterSession();
             } else {
-                alert("Sai mật khẩu! Vui lòng kiểm tra lại mật khẩu của bạn.");
+                alert("Sai mật khẩu! Vui lòng kiểm tra lại.");
             }
         }
     }
@@ -598,7 +675,9 @@
     function saveAndEnterSession() {
         localStorage.setItem('chat_current_user', username);
         localStorage.setItem('chat_current_color', userColor);
-        localStorage.setItem(`chat_color_${username.toLowerCase()}`, userColor);
+        if (username.toLowerCase() !== MY_NAME.toLowerCase()) {
+            localStorage.setItem(`chat_color_${username.toLowerCase()}`, userColor);
+        }
 
         document.getElementById('welcomeModal').style.display = 'none';
         document.getElementById('authModal').style.display = 'none';
@@ -610,7 +689,7 @@
     function updateUserLabel() {
         const userLabel = document.getElementById('user-label');
         if (username.toLowerCase() === MY_NAME.toLowerCase()) {
-            userLabel.innerHTML = `Tài khoản: <span style="color: #ff4757; font-weight: bold;">Traidz</span>`;
+            userLabel.innerHTML = `Tài khoản: <span class="rainbow-name">Traidz</span>`;
         } else {
             userLabel.innerHTML = `Tài khoản: <span style="color: ${userColor}; font-weight: bold;">${escapeHTML(username)}</span>`;
         }
@@ -704,7 +783,7 @@
             let badgeHtml = "";
 
             if (msg.name.toLowerCase() === MY_NAME.toLowerCase()) {
-                nameHtml = `<span style="color: #ff4757; font-weight: bold;">Traidz</span>`;
+                nameHtml = `<span class="rainbow-name">Traidz</span>`;
                 badgeHtml = `
                     <span class="admin-badge" title="Tài khoản chính chủ Traidz">
                         <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
